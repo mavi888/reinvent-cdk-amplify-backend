@@ -1,14 +1,9 @@
-# Welcome to your CDK TypeScript project!
+# Some configurations
 
-This is a blank project for TypeScript development with CDK.
+1. I bootstraped the account and region for cdk
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+2. Created a github repo where the amplify app will be hosted
 
-## Useful commands
+3. Created a new github token with the repo and admin:repo_hook permissions
 
- * `npm run build`   compile typescript to js
- * `npm run watch`   watch for changes and compile
- * `npm run test`    perform the jest unit tests
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk synth`       emits the synthesized CloudFormation template
+4. Save that token in secret manager as a plaintext secret, save it with the name "github-token"
