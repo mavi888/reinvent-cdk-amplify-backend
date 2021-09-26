@@ -5,23 +5,28 @@ import * as appsync from "@aws-cdk/aws-appsync";
 
 import * as cdk_appsync_transformer from "cdk-appsync-transformer";
 
+interface ReinventCdkAmplifyStackProps extends cdk.StackProps {
+  readonly stage : string
+}
+
 export class ReinventCdkAmplifyStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: cdk.Construct, id: string, props: ReinventCdkAmplifyStackProps) {
     super(scope, id, props);
 
+    
     // CREATE COGNITO USER POOL AND IDENTITY POOL 
-    const userPool = new cognito.UserPool(this, "AmplifyCDKUserPool", {
+    const userPool = new cognito.UserPool(this, `${props.stage}-AmplifyCDKUserPool`, {
       selfSignUpEnabled: true, // Allow users to sign up
       autoVerify: { email: true }, // Verify email addresses by sending a verification code
       signInAliases: { email: true }, // Set email as an alias
     });
 
-    const userPoolClient = new cognito.UserPoolClient(this, "AmplifyCDKUserPoolClient", {
+    const userPoolClient = new cognito.UserPoolClient(this, `${props.stage}-AmplifyCDKUserPoolClient`, {
       userPool,
       generateSecret: false, // Don't need to generate secret for web app running on browsers
     });
 
-    const identityPool = new cognito.CfnIdentityPool(this, "AmplifyCDKIdentityPool", {
+    const identityPool = new cognito.CfnIdentityPool(this, `${props.stage}-AmplifyCDKIdentityPool`, {
       allowUnauthenticatedIdentities: true, 
       cognitoIdentityProviders: [ {
           clientId: userPoolClient.userPoolClientId,
@@ -30,7 +35,7 @@ export class ReinventCdkAmplifyStack extends cdk.Stack {
     });
 
     // CREAT THE APPSYNC API
-    const appsync_api = new cdk_appsync_transformer.AppSyncTransformer(this, "CDKAmplifyProject", {
+    const appsync_api = new cdk_appsync_transformer.AppSyncTransformer(this, `${props.stage}-CDKAmplifyProject`, {
       schemaPath: 'graphql/schema.graphql',
       authorizationConfig: {
         defaultAuthorization: {
@@ -45,7 +50,7 @@ export class ReinventCdkAmplifyStack extends cdk.Stack {
     });
 
     // AMPLIFY APPLICATION
-    const amplifyApp = new amplify.App(this, "cdk-amplify-appsync", {
+    const amplifyApp = new amplify.App(this, `${props.stage}-CDKAmplifyAppsync`, {
       sourceCodeProvider: new amplify.GitHubSourceCodeProvider({
         owner: "mavi888",
         repository: "reinvent-cdk-amplify-frontend",
@@ -60,6 +65,12 @@ export class ReinventCdkAmplifyStack extends cdk.Stack {
       }
     });
 
-    const masterBranch = amplifyApp.addBranch("main");
+    if (props.stage === 'prod') {
+      const main = amplifyApp.addBranch("main");
+      main.addEnvironment('STAGE', 'prod');
+    } else {
+      const dev = amplifyApp.addBranch('develop');
+      dev.addEnvironment('STAGE', 'dev')
+    }
   }
 }
