@@ -38,7 +38,7 @@ export class ReinventCdkAmplifyStack extends cdk.Stack {
     //CREATE THE FUNCTION THAT MARKS THINGS PURCHASED
     const markShoppingDoneFunction = new lambda.Function(this, `${props.stage}-MarkShoppingDoneFunction`, {
       runtime: lambda.Runtime.NODEJS_14_X,
-      code: lambda.Code.fromAsset(''),
+      code: lambda.Code.fromAsset('functions'),
       handler: 'markShoppingDone.handler'
     })
 
