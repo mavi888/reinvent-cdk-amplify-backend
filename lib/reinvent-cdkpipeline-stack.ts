@@ -25,8 +25,8 @@ import { ReinventCdkPipelineStageStack } from './reinvent-cdkpipeline-stage-stac
         output: sourceArtifact,
         oauthToken: SecretValue.secretsManager('github-token'),
         owner: 'mavi888',
-        repo: 'reinvent-cdk-amplify-backend-private-test',
-        branch: 'develop'
+        repo: 'reinvent-cdk-amplify-backend',
+        branch: 'main'
       }),
 
       // How it will be built and synthesized
