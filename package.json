@@ -29,6 +29,7 @@
     "@aws-cdk/aws-lambda": "^1.125.0",
     "@aws-cdk/core": "1.125.0",
     "@aws-cdk/pipelines": "^1.125.0",
+    "@types/aws-lambda": "^8.10.83",
     "@types/deep-diff": "^1.0.1",
     "cdk-appsync-transformer": "^1.77.16",
     "source-map-support": "^0.5.16"
