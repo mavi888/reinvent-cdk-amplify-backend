@@ -2,6 +2,7 @@ import * as cdk from '@aws-cdk/core';
 import * as cognito from "@aws-cdk/aws-cognito";
 import * as amplify from "@aws-cdk/aws-amplify";
 import * as appsync from "@aws-cdk/aws-appsync";
+import * as lambda from "@aws-cdk/aws-lambda";
 
 import * as cdk_appsync_transformer from "cdk-appsync-transformer";
 
@@ -34,6 +35,13 @@ export class ReinventCdkAmplifyStack extends cdk.Stack {
       }],
     });
 
+    //CREATE THE FUNCTION THAT MARKS THINGS PURCHASED
+    const markShoppingDoneFunction = new lambda.Function(this, `${props.stage}-MarkShoppingDoneFunction`, {
+      runtime: lambda.Runtime.NODEJS_14_X,
+      code: lambda.Code.fromAsset(''),
+      handler: 'markShoppingDone.handler'
+    })
+
     // CREAT THE APPSYNC API
     const appsync_api = new cdk_appsync_transformer.AppSyncTransformer(this, `${props.stage}-CDKAmplifyProject`, {
       schemaPath: 'graphql/schema.graphql',
@@ -48,6 +56,10 @@ export class ReinventCdkAmplifyStack extends cdk.Stack {
         }
       }
     });
+
+    appsync_api.addLambdaDataSourceAndResolvers('markShoppingDoneFunction', `${props.stage}-MarkShoppingDoneDS`, markShoppingDoneFunction, {
+      name: 'markShoppingDoneDataSource'
+    })
 
     // AMPLIFY APPLICATION
     const amplifyApp = new amplify.App(this, `${props.stage}-CDKAmplifyAppsync`, {

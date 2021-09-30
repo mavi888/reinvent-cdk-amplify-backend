@@ -3,3 +3,7 @@ type ShoppingListItem @model @auth(rules: [{ allow: public }]) {
   itemName: String!
   isComplete: Boolean
 }
+
+type Mutation {
+  markShoppingDone: [ShoppingListItem] @function(name:'markShoppingDoneFunction')
+}
