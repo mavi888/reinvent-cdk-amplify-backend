@@ -3,6 +3,7 @@ import * as cognito from "@aws-cdk/aws-cognito";
 import * as amplify from "@aws-cdk/aws-amplify";
 import * as appsync from "@aws-cdk/aws-appsync";
 import * as lambda from "@aws-cdk/aws-lambda";
+import * as path from 'path';
 
 import * as cdk_appsync_transformer from "cdk-appsync-transformer";
 
@@ -38,7 +39,7 @@ export class ReinventCdkAmplifyStack extends cdk.Stack {
     //CREATE THE FUNCTION THAT MARKS THINGS PURCHASED
     const markShoppingDoneFunction = new lambda.Function(this, `${props.stage}-MarkShoppingDoneFunction`, {
       runtime: lambda.Runtime.NODEJS_14_X,
-      code: lambda.Code.fromAsset('functions'),
+      code: lambda.Code.fromAsset(path.join(__dirname, 'functions')),
       handler: 'markShoppingDone.handler'
     })
 
