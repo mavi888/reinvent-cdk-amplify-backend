@@ -5,6 +5,6 @@ type ShoppingListItem @model @auth(rules: [{ allow: public }]) {
 }
 
 type Mutation {
-  markShoppingDone: [ShoppingListItem]
+  markShoppingDone(email: String!): [ShoppingListItem]
     @function(name: "markShoppingDoneFunction")
 }
