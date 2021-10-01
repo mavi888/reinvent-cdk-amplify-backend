@@ -4,6 +4,8 @@ import * as amplify from "@aws-cdk/aws-amplify";
 import * as appsync from "@aws-cdk/aws-appsync";
 import * as lambda from "@aws-cdk/aws-lambda";
 import * as path from 'path';
+import * as sns from '@aws-cdk/aws-sns';
+import * as subs from '@aws-cdk/aws-sns-subscriptions';
 
 import * as cdk_appsync_transformer from "cdk-appsync-transformer";
 
@@ -36,12 +38,26 @@ export class ReinventCdkAmplifyStack extends cdk.Stack {
       }],
     });
 
+     // CREATE SNS TOPIC THAT SENDS EMAILS
+     const purchaseTopic = new sns.Topic(this, `${props.stage}-SNSTopic`, {
+      displayName: 'Purchase all',
+    });
+
+    purchaseTopic.addSubscription(new subs.EmailSubscription('foobarblog888@gmail.com')); // USE PARAMETERS LATER
+
+
     //CREATE THE FUNCTION THAT MARKS THINGS PURCHASED
     const markShoppingDoneFunction = new lambda.Function(this, `${props.stage}-MarkShoppingDoneFunction`, {
       runtime: lambda.Runtime.NODEJS_14_X,
       code: lambda.Code.fromAsset(path.join(__dirname, 'functions')),
-      handler: 'markShoppingDone.handler'
+      handler: 'markShoppingDone.handler',
+      environment: {
+        TOPIC: purchaseTopic.topicArn
+      }
     })
+
+    // ALLOW FUNCTION TO PUBLISH IN THE TOPIC
+    purchaseTopic.grantPublish(markShoppingDoneFunction)
 
     // CREAT THE APPSYNC API
     const appsync_api = new cdk_appsync_transformer.AppSyncTransformer(this, `${props.stage}-CDKAmplifyProject`, {

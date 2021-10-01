@@ -8,3 +8,7 @@ node_modules
 cdk.out
 appsync/resolvers/
 appsync/schema.graphql
+.vscode/settings.json
+
+#Allow
+!lib/functions/*.js
