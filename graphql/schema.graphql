@@ -5,6 +5,5 @@ type ShoppingListItem @model @auth(rules: [{ allow: public }]) {
 }
 
 type Mutation {
-  markShoppingDone: [ShoppingListItem]
-    @function(name: "markShoppingDoneFunction")
+  notifyShoppingDone: Boolean @function(name: "notifyShoppingDoneFunction")
 }

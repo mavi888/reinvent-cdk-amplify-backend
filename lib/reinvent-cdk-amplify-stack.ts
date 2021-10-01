@@ -47,17 +47,17 @@ export class ReinventCdkAmplifyStack extends cdk.Stack {
 
 
     //CREATE THE FUNCTION THAT MARKS THINGS PURCHASED
-    const markShoppingDoneFunction = new lambda.Function(this, `${props.stage}-MarkShoppingDoneFunction`, {
+    const notifyShoppingDoneFunction = new lambda.Function(this, `${props.stage}-NotifyShoppingDoneFunction`, {
       runtime: lambda.Runtime.NODEJS_14_X,
       code: lambda.Code.fromAsset(path.join(__dirname, 'functions')),
-      handler: 'markShoppingDone.handler',
+      handler: 'notifyShoppingDone.handler',
       environment: {
         TOPIC: purchaseTopic.topicArn
       }
     })
 
     // ALLOW FUNCTION TO PUBLISH IN THE TOPIC
-    purchaseTopic.grantPublish(markShoppingDoneFunction)
+    purchaseTopic.grantPublish(notifyShoppingDoneFunction)
 
     // CREAT THE APPSYNC API
     const appsync_api = new cdk_appsync_transformer.AppSyncTransformer(this, `${props.stage}-CDKAmplifyProject`, {
