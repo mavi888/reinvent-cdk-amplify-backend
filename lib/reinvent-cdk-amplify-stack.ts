@@ -74,8 +74,8 @@ export class ReinventCdkAmplifyStack extends cdk.Stack {
       }
     });
 
-    appsync_api.addLambdaDataSourceAndResolvers('markShoppingDoneFunction', `${props.stage}-MarkShoppingDoneDS`, markShoppingDoneFunction, {
-      name: 'markShoppingDoneDataSource'
+    appsync_api.addLambdaDataSourceAndResolvers('notifyShoppingDoneFunction', `${props.stage}-NotifyShoppingDoneDS`, notifyShoppingDoneFunction, {
+      name: 'notifyShoppingDoneDataSource'
     })
 
     // AMPLIFY APPLICATION
