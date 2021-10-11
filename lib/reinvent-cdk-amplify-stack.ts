@@ -9,6 +9,8 @@ import * as subs from '@aws-cdk/aws-sns-subscriptions';
 
 import * as cdk_appsync_transformer from "cdk-appsync-transformer";
 
+import * as config from '../config.json'  
+
 interface ReinventCdkAmplifyStackProps extends cdk.StackProps {
   readonly stage : string
 }
@@ -81,8 +83,8 @@ export class ReinventCdkAmplifyStack extends cdk.Stack {
     // AMPLIFY APPLICATION
     const amplifyApp = new amplify.App(this, `${props.stage}-CDKAmplifyAppsync`, {
       sourceCodeProvider: new amplify.GitHubSourceCodeProvider({
-        owner: "mavi888",
-        repository: "reinvent-cdk-amplify-frontend",
+        owner: config.frontend.owner, 
+        repository: config.frontend.repository_name,
         oauthToken: cdk.SecretValue.secretsManager('github-token')
       }),
       environmentVariables: {

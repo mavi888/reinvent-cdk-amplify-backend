@@ -1,0 +1,31 @@
+{
+    "application": {
+        "application_name": "<application_name>",
+        "repository_name": "<name_of_the_CodeCommit_mirror_repo>",
+        "branch": "master",
+        "build_environment": {
+            "account": "<account-id-of-build-account>",
+            "region": "<build-aws-region>"
+        }
+    },
+    "frontend": {
+        "repository_name":"reinvent-cdk-amplify-frontend",
+        "owner": "mavi888"
+    },
+    "environments": {
+        "dev": {
+            "name": "dev",
+            "env": {
+                "account": "<account-id-of-production-account>",
+                "region": "<region>"
+            }
+        },
+        "production": {
+            "name": "production",
+            "env": {
+                "account": "<account-id-of-production-account>",
+                "region": "<region>"
+            }
+        }
+    }
+}
