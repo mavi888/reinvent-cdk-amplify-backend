@@ -4,6 +4,8 @@ import { Construct, SecretValue, Stack, StackProps } from '@aws-cdk/core';
 import { CdkPipeline, SimpleSynthAction } from "@aws-cdk/pipelines";
 import { ReinventCdkPipelineStageStack } from './reinvent-cdkpipeline-stage-stack';
 
+import * as config from '../config.json'  
+
 /**
  * The stack that defines the application pipeline
  */
@@ -16,7 +18,7 @@ import { ReinventCdkPipelineStageStack } from './reinvent-cdkpipeline-stage-stac
 
       const pipeline = new CdkPipeline(this, 'CDKAmplifyPipeline', {
         // The pipeline name
-        pipelineName: 'CDKAmplifyPipeline',
+        pipelineName: config.cdk_pipeline.pipeline_name,
         cloudAssemblyArtifact,
 
         // Where the source can be found
@@ -24,9 +26,9 @@ import { ReinventCdkPipelineStageStack } from './reinvent-cdkpipeline-stage-stac
         actionName: 'GitHub',
         output: sourceArtifact,
         oauthToken: SecretValue.secretsManager('github-token'),
-        owner: 'mavi888',
-        repo: 'reinvent-cdk-amplify-backend',
-        branch: 'main'
+        owner: config.cdk_pipeline.repository_owner,
+        repo: config.cdk_pipeline.repository_name,
+        branch: config.cdk_pipeline.branch
       }),
 
       // How it will be built and synthesized
@@ -39,8 +41,8 @@ import { ReinventCdkPipelineStageStack } from './reinvent-cdkpipeline-stage-stac
       }),
    });
    // This is where we add the application stages
-   const preprod = new ReinventCdkPipelineStageStack(this, 'dev', {
-    env: { account: '956623257675', region: 'eu-north-1' }
+   const preprod = new ReinventCdkPipelineStageStack(this, config.environments.dev.name, {
+    env: { account: config.environments.dev.env.account, region: config.environments.dev.env.region }
   });
 
   // put validations for the stages 
@@ -59,8 +61,8 @@ import { ReinventCdkPipelineStageStack } from './reinvent-cdkpipeline-stage-stac
     ],
   }));*/
 
-  const prod = new ReinventCdkPipelineStageStack(this, 'prod', {
-    env: { account: '956623257675', region: 'eu-north-1' }
+  const prod = new ReinventCdkPipelineStageStack(this, config.environments.production.name, {
+    env: { account: config.environments.production.env.account, region: config.environments.production.env.region }
   })
 
   const prodStage = pipeline.addApplicationStage(prod);

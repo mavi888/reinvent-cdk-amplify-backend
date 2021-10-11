@@ -1,8 +1,9 @@
 {
-    "application": {
-        "application_name": "<application_name>",
-        "repository_name": "<name_of_the_CodeCommit_mirror_repo>",
-        "branch": "master",
+    "cdk_pipeline": {
+        "pipeline_name": "CDKAmplifyPipeline",
+        "repository_name": "reinvent-cdk-amplify-backend",
+        "repository_owner": "mavi888",
+        "branch": "main",
         "build_environment": {
             "account": "<account-id-of-build-account>",
             "region": "<build-aws-region>"
@@ -16,15 +17,15 @@
         "dev": {
             "name": "dev",
             "env": {
-                "account": "<account-id-of-production-account>",
-                "region": "<region>"
+                "account": "956623257675",
+                "region": "eu-north-1"
             }
         },
         "production": {
-            "name": "production",
+            "name": "prod",
             "env": {
-                "account": "<account-id-of-production-account>",
-                "region": "<region>"
+                "account": "956623257675",
+                "region": "eu-north-1"
             }
         }
     }
