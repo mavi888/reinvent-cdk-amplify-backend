@@ -91,7 +91,11 @@ export class ReinventCdkAmplifyStack extends cdk.Stack {
         'USER_POOL_CLIENT_ID': userPoolClient.userPoolClientId,
         'REGION': this.region,
         'APPSYNC_API': appsync_api.appsyncAPI.graphqlUrl,
-      }
+      },
+      autoBranchCreation: { // Automatically connect branches that match a pattern set
+        patterns: ['feature/*']
+      },
+      autoBranchDeletion: true // Automatically disconnect a branch when you delete a branch from your repository
     });
 
     if (props.stage === 'prod') {
