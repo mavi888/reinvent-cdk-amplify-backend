@@ -5,8 +5,13 @@
         "repository_owner": "mavi888",
         "branch": "main",
         "build_environment": {
-            "account": "<account-id-of-build-account>",
-            "region": "<build-aws-region>"
+            "account": "956623257675",
+            "region": "eu-north-1"
+        }
+    },
+    "application": {
+        "sns_subscription": {
+            "email": "foobarblog888@gmail.com"
         }
     },
     "frontend": {

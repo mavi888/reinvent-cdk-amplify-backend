@@ -3,6 +3,8 @@ import 'source-map-support/register';
 import * as cdk from '@aws-cdk/core';
 import { ReinventCdkpipelineStack } from '../lib/reinvent-cdkpipeline-stack'
 
+import * as config from '../config.json'  
+
 const app = new cdk.App();
 new ReinventCdkpipelineStack(app, 'ReinventCdkpipelineStack', {
   /* If you don't specify 'env', this stack will be environment-agnostic.
@@ -15,7 +17,7 @@ new ReinventCdkpipelineStack(app, 'ReinventCdkpipelineStack', {
 
   /* Uncomment the next line if you know exactly what Account and Region you
    * want to deploy the stack to. */
-  env: { account: '956623257675', region: 'eu-north-1' },
+  env: { account: config.cdk_pipeline.build_environment.account, region: config.cdk_pipeline.build_environment.region },
 
   /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
 });

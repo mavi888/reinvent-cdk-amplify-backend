@@ -1,0 +1,37 @@
+{
+    "cdk_pipeline": {
+        "pipeline_name": "CDKAmplifyPipeline",
+        "repository_name": "<name of the CDK app repo>",
+        "repository_owner": "<owner of the CDK app repo>",
+        "branch": "main",
+        "build_environment": {
+            "account": "<account id for the account building the CDK app>",
+            "region": "<region id for the account building the CDK app>"
+        }
+    },
+    "application": {
+        "sns_subscription": {
+            "email": "<email for testing the sns subscriptions>"
+        }
+    },
+    "frontend": {
+        "repository_name":"<name of the frontend app repo>",
+        "owner": "<name of the frontend app repo owner>"
+    },
+    "environments": {
+        "dev": {
+            "name": "dev",
+            "env": {
+                "account": "<account id for the account building the dev enviroment>",
+                "region": "<region id for the account building the dev enviroment>"
+            }
+        },
+        "production": {
+            "name": "prod",
+            "env": {
+                "account": "<account id for the account building the prod enviroment>",
+                "region": "<region id for the account building the prod enviroment>"
+            }
+        }
+    }
+}

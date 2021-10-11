@@ -45,7 +45,7 @@ export class ReinventCdkAmplifyStack extends cdk.Stack {
       displayName: 'Purchase all',
     });
 
-    purchaseTopic.addSubscription(new subs.EmailSubscription('foobarblog888@gmail.com')); // USE PARAMETERS LATER
+    purchaseTopic.addSubscription(new subs.EmailSubscription(config.application.sns_subscription.email));
 
 
     //CREATE THE FUNCTION THAT MARKS THINGS PURCHASED
