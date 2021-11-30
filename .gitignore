@@ -12,3 +12,6 @@ appsync/schema.graphql
 
 #Allow
 !lib/functions/*.js
+!lib/test/*.js
+!lib/canary/nodejs/node_modules/
+!lib/canary/nodejs/node_modules/*.js
