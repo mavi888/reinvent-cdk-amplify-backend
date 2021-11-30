@@ -3,6 +3,7 @@ import * as cognito from "@aws-cdk/aws-cognito";
 import * as amplify from "@aws-cdk/aws-amplify";
 import * as appsync from "@aws-cdk/aws-appsync";
 import * as lambda from "@aws-cdk/aws-lambda";
+import * as lambdaNode from "@aws-cdk/aws-lambda-nodejs";
 import * as path from 'path';
 import * as sns from '@aws-cdk/aws-sns';
 import * as subs from '@aws-cdk/aws-sns-subscriptions';
@@ -10,12 +11,15 @@ import * as subs from '@aws-cdk/aws-sns-subscriptions';
 import * as cdk_appsync_transformer from "cdk-appsync-transformer";
 
 import * as config from '../config.json'  
+import { Tracing } from '@aws-cdk/aws-lambda';
 
 interface ReinventCdkAmplifyStackProps extends cdk.StackProps {
   readonly stage : string
 }
 
 export class ReinventCdkAmplifyStack extends cdk.Stack {
+  public readonly amplifyApp: cdk.CfnOutput;
+  public readonly urlOutput: cdk.CfnOutput;
   constructor(scope: cdk.Construct, id: string, props: ReinventCdkAmplifyStackProps) {
     super(scope, id, props);
 
@@ -49,13 +53,17 @@ export class ReinventCdkAmplifyStack extends cdk.Stack {
 
 
     //CREATE THE FUNCTION THAT MARKS THINGS PURCHASED
-    const notifyShoppingDoneFunction = new lambda.Function(this, `${props.stage}-NotifyShoppingDoneFunction`, {
+    const notifyShoppingDoneFunction = new lambdaNode.NodejsFunction(this, `${props.stage}-NotifyShoppingDoneFunction`, {
       runtime: lambda.Runtime.NODEJS_14_X,
-      code: lambda.Code.fromAsset(path.join(__dirname, 'functions')),
-      handler: 'notifyShoppingDone.handler',
+      handler: 'handler',
+      entry: path.resolve(__dirname, 'functions') + '/notifyShoppingDone.js',
       environment: {
         TOPIC: purchaseTopic.topicArn
-      }
+      },
+      bundling: {
+        nodeModules: ["aws-xray-sdk"],
+      },
+      tracing: Tracing.ACTIVE
     })
 
     // ALLOW FUNCTION TO PUBLISH IN THE TOPIC
@@ -73,7 +81,8 @@ export class ReinventCdkAmplifyStack extends cdk.Stack {
                 defaultAction: appsync.UserPoolDefaultAction.ALLOW
             }
         }
-      }
+      },
+      xrayEnabled: true,
     });
 
     appsync_api.addLambdaDataSourceAndResolvers('notifyShoppingDoneFunction', `${props.stage}-NotifyShoppingDoneDS`, notifyShoppingDoneFunction, {
@@ -106,6 +115,16 @@ export class ReinventCdkAmplifyStack extends cdk.Stack {
     } else {
       const dev = amplifyApp.addBranch('develop');
       dev.addEnvironment('STAGE', 'dev')
+    }
+
+    // Outputs and exports
+    this.amplifyApp = new cdk.CfnOutput(this, `${props.stage}-AppName`, { value: amplifyApp.appName, exportName: `${props.stage}-AppName` });
+    this.amplifyApp = new cdk.CfnOutput(this, `${props.stage}-AppId`, { value: amplifyApp.appId, exportName: `${props.stage}-AppId` });
+    this.amplifyApp = new cdk.CfnOutput(this, `${props.stage}-ApiId`, { value: appsync_api.appsyncAPI.apiId, exportName: `${props.stage}-ApiId` });
+    if (props.stage === 'prod') {
+      this.urlOutput = new cdk.CfnOutput(this, `${props.stage}-DefaultDomain`, { value: `https://main.${amplifyApp.defaultDomain}`, exportName: `${props.stage}-DefaultDomain` });
+    } else {
+      this.urlOutput = new cdk.CfnOutput(this, `${props.stage}-DefaultDomain`, { value: `https://develop.${amplifyApp.defaultDomain}`, exportName: `${props.stage}-DefaultDomain` });
     }
   }
 }
